@@ -26,7 +26,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: true,
           toolbarHeight: 70,
@@ -37,144 +37,136 @@ class _AddBookScreenState extends State<AddBookScreen> {
         ),
         body: GetBuilder<AddBookController>(
           init: addBookController,
-          builder: (controller) => SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    (addBookController.pickImage != null)
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(addBookController.pickImage!,
-                                height: 200, width: 200, fit: BoxFit.cover),
-                          )
-                        : Icon(
-                            Icons.account_circle,
-                            size: 200,
+          builder: (controller) =>
+              SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        (addBookController.pickImage != null)
+                            ? Image.file(addBookController.pickImage!,
+                            height: 180, width: 120, fit: BoxFit.cover)
+                            : GestureDetector(
+                          onTap: () {
+                            addBookController.showMyCupertinoDialoge(context);
+                          },
+                          child: Container(
+                            height: 180,
+                            width: 120,
+                            color: Colors.brown.shade100,
+                            child: Icon(Icons.add_a_photo_outlined, size: 30,
+                              color: Colors.brown,),
                           ),
-                    Center(
-                      child: CupertinoButton(
-                        onPressed: () {
-                          addBookController.showMyCupertinoDialoge(context);
-                        },
-                        child: Text("Add a Book"),
-                      ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InputField(
+                          maxLine: 1,
+
+                          controller: addBookController.bookNameController,
+                          focusNode: addBookController.bookNameFocusNode,
+                          hint: "Book Name",
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Please Enter Book Name";
+                            } else if (val.length>=20) {
+                              return "Please Enter Below 20 Words";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InputField(
+                          maxLine: 1,
+                          controller: addBookController.authorNameController,
+                          focusNode: addBookController.authorNameFocusNode,
+                          hint: "Author Name",
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Please Enter Author Name";
+                            } else if (val.length>=20) {
+                              return "Please Enter Below 20 Words";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InputField(
+                          maxLine: 5,
+                          controller: addBookController.aboutAuthorController,
+                          focusNode: addBookController.aboutAuthorFocusNode,
+                          hint: "About Author",
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Please Enter About Author";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InputField(
+                          maxLine: 5,
+                          controller: addBookController.aboutBookController,
+                          focusNode: addBookController.aboutBookFocusNode,
+                          hint: "About Book",
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Please Enter About Book";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+
+                        SmoothStarRating(
+                            allowHalfRating: false,
+                            onRatingChanged: (v) {
+                              addBookController.rating = v;
+                              addBookController.update();
+                              print(addBookController.rating);
+                            },
+                            starCount: 5,
+                            rating: addBookController.rating,
+                            size: 40.0,
+                            color: Colors.brown,
+                            borderColor: Colors.brown,
+                            spacing: 0.0),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        addBookController.remindMeDateSelectWidget(context),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        addBookController.buildButton()
+                      ],
                     ),
-                    InputField(
-                      maxLine: 1,
-                      controller: addBookController.bookNameController,
-                      focusNode: addBookController.bookNameFocusNode,
-                      hint: "Book Name",
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Please Enter Book Name";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InputField(
-                      maxLine: 1,
-                      controller: addBookController.authorNameController,
-                      focusNode: addBookController.authorNameFocusNode,
-                      hint: "Author Name",
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Please Enter Author Name";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InputField(
-                      maxLine: 5,
-                      controller: addBookController.aboutAuthorController,
-                      focusNode: addBookController.aboutAuthorFocusNode,
-                      hint: "About Author",
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Please Enter About Author";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InputField(
-                      maxLine: 5,
-                      controller: addBookController.aboutBookController,
-                      focusNode: addBookController.aboutBookFocusNode,
-                      hint: "About Book",
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Please Enter About Book";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    // InputField(
-                    //   maxLine: 1,
-                    //   controller: addBookController.ratingController,
-                    //   focusNode: addBookController.ratingFocusNode,
-                    //   hint: "Rating",
-                    //   textInputAction: TextInputAction.next,
-                    //   keyboardType: TextInputType.text,
-                    //   validator: (val) {
-                    //     if (val!.isEmpty) {
-                    //       return "Please Enter Rating";
-                    //     }else {
-                    //       return null;
-                    //     }
-                    //   },
-                    // ),
-                    SmoothStarRating(
-                        allowHalfRating: false,
-                        onRatingChanged: (v) {
-                          addBookController.rating = v;
-                          addBookController.update();
-                          print(addBookController.rating);
-                        },
-                        starCount: 5,
-                        rating: addBookController.rating,
-                        size: 40.0,
-                        color: Colors.brown,
-                        borderColor: Colors.brown,
-                        spacing: 0.0),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    addBookController.remindMeDateSelectWidget(context),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    addBookController.buildButton()
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
         ),
       ),
     );

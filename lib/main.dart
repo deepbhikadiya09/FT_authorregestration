@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled/app_route.dart';
 import 'package:untitled/screen/addbook_screen.dart';
+import 'package:untitled/screen/on_boarding_screen.dart';
 import 'package:untitled/screen/showbook_screen.dart';
+import 'package:untitled/screen/splash_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding();
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'authorRegestration',
       initialRoute: Routes.initial,
       getPages: Routes.pages,
+      // home: OnBoardingScreen(),
     );
   }
 }

@@ -14,6 +14,7 @@ class InputField extends StatelessWidget {
   final Function(String?)? onChange;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
+
   const InputField({
     Key? key,
     required this.controller,
@@ -30,6 +31,7 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+
       maxLines: maxLine,
       controller: controller,
       focusNode: focusNode,

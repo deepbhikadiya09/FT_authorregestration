@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 class ShowBookController extends GetxController {
   final databaseRef = FirebaseDatabase.instance.ref('database');
   List<dynamic> finalData = [];
-
+  bool isLoading =false;
 
   getdata() {
+    isLoading=true;
+    finalData.clear();
     databaseRef.get().then((snapshot) {
       if (snapshot.exists) {
         Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
@@ -14,16 +16,12 @@ class ShowBookController extends GetxController {
           print(value);
 
           finalData.add(value);
+          finalData=finalData.reversed.toList();
+          isLoading=false;
           update();
         });
       }
     });
   }
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    getdata();
-    super.onInit();
-  }
 }

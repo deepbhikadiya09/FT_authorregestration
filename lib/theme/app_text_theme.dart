@@ -15,7 +15,7 @@ final TextStyle primaryColor18TextStyleMedium = TextStyle(
 );
 
 final TextStyle primaryColor14TextStyleMedium = TextStyle(
-  color: ColorConstants.primaryTextColor,
+  color: Colors.brown.shade500,
   fontSize: 14,
   fontWeight: FontWeight.w500,
 );
@@ -30,7 +30,7 @@ final TextStyle grayColor16TextStyleMedium = TextStyle(
   fontWeight: FontWeight.w500,
 );
 final TextStyle grayColor12TextStyleMedium = TextStyle(
-  color: ColorConstants.grayColor,
+  color: Colors.brown,
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );

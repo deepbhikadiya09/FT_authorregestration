@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:untitled/app_route.dart';
+
+import '../common/common_function.dart';
 
 
 class AddBookController extends GetxController {
@@ -18,34 +21,55 @@ class AddBookController extends GetxController {
   FocusNode aboutAuthorFocusNode = FocusNode();
   final aboutBookController = TextEditingController();
   FocusNode aboutBookFocusNode = FocusNode();
-  // final ratingController = TextEditingController();
-  // FocusNode ratingFocusNode = FocusNode();
+
   DateTime selectedDate = DateTime.now();
   File? pickImage;
   UploadTask? uploadTask;
   FirebaseDatabase database = FirebaseDatabase.instance;
+  FirebaseStorage _storage = FirebaseStorage.instance;
+
   double rating=1.0;
-  //upload a image in firebase storage
-  // Future uploadPic() async{
-  //   String fileName = basename(pickImage!.path);
-  //   final ref = FirebaseStorage.instance.ref().child(fileName);
-  //   uploadTask = ref.putFile(pickImage!);
-  //   final taskSnapshot=await uploadTask!.whenComplete((){});
-  //   print("file uploded");
-  //   update();
-  // }
 
 
-  setData(){
-    database.ref().child('database').push().set({
-      "image": pickImage!.path,
-      "bookName" : bookNameController.text,
-      "authorName" : authorNameController.text,
-      "aboutAuthor" : aboutAuthorController.text,
-      "aboutBook": aboutBookController.text,
-      "rating": rating,
-      "date":"${selectedDate.day.toString()}/${selectedDate.month.toString()} /${selectedDate.year.toString()}",
-    });
+  setData()async{
+
+    CustomDialogs.getInstance.showProgressDialog();
+
+    String fileName = basename(pickImage!.path);
+      await FirebaseStorage.instance
+          .ref(fileName)
+          .putFile(File(pickImage!.path))
+          .then((taskSnapshot) {
+        print("task done");
+
+
+        if (taskSnapshot.state == TaskState.success) {
+          FirebaseStorage.instance
+              .ref(fileName)
+              .getDownloadURL()
+              .then((url) {
+            print("Here is the URL of Image $url");
+            database.ref().child('database').push().set({
+              "image": url,
+              "bookName" : bookNameController.text,
+              "authorName" : authorNameController.text,
+              "aboutAuthor" : aboutAuthorController.text,
+              "aboutBook": aboutBookController.text,
+              "rating": rating,
+              "date":"${selectedDate.day.toString()}/${selectedDate.month.toString()} /${selectedDate.year.toString()}",
+            });
+
+              CustomDialogs.getInstance.hideProgressDialog();
+
+              Get.offNamed(Routes.showBookScreen);
+
+          }).catchError((onError) {
+            print("Got Error $onError");
+          });
+        }
+      });
+
+
   }
 
   buildButton() {
@@ -65,9 +89,8 @@ class AddBookController extends GetxController {
             primary: isFormValid ? Colors.brown : Colors.brown.shade100
         ),
         onPressed: (){
-          // uploadPic();
           setData();
-          Get.offAndToNamed(Routes.initial);
+
         },
         child: Text('Save',style: TextStyle(fontSize: 20),),
       ),
@@ -81,7 +104,6 @@ class AddBookController extends GetxController {
         builder: (context) {
           return CupertinoAlertDialog(
             title: Text("Choose Image From"),
-            content: Text("Hello!! this is content"),
             actions: [
               CupertinoDialogAction(
                 child: Text("Camera"),
@@ -188,4 +210,7 @@ class AddBookController extends GetxController {
       update();
     }
   }
+
+
+
 }
